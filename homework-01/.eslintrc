@@ -12,6 +12,7 @@
   ],
   "root": true,
   "rules": {
+    "generators": "as-needed",
     "semi": "off",
     "quotes": ["error", "single", { "avoidEscape": true }],
     "no-plusplus": "off",
