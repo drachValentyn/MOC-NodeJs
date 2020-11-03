@@ -1,0 +1,8 @@
+.vscode/
+/node_modules
+.package.swp
+package-lock.json
+
+.DS_Store
+.Spotlight-V100
+.Trashes
