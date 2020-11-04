@@ -12,7 +12,7 @@
   ],
   "root": true,
   "rules": {
-    "generators": "as-needed",
+    "func-names": "off",
     "semi": "off",
     "quotes": ["error", "single", { "avoidEscape": true }],
     "no-plusplus": "off",
