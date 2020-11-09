@@ -8,8 +8,7 @@ const boot = function (arr = [], param = '', value = '') {
   const task3Result = task3(task1Result);
   console.log(task3Result);
 
-  const task2Result = renameTask2(task3Result);
-  console.log(task2Result);
+  console.log(renameTask2);
 };
 
 boot(data, 'type', 'socks');

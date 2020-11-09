@@ -1,7 +1,5 @@
 const filterArray = function (arr = [], param = '', value = '') {
-  return arr.filter((el) => {
-    return Object.keys(el).includes(param) && Object.values(el).includes(value);
-  });
+  return arr.filter((el) => param in el && el[param] === value);
 };
 
 module.exports = filterArray;
