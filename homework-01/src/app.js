@@ -1,8 +1,5 @@
-const fs = require('fs');
+const data = require('../homework.json');
 const { task1: renameTask1, task2: renameTask2, task3 } = require('./task');
-
-const data = fs.readFileSync('homework.json', 'utf8');
-const words = JSON.parse(data);
 
 const boot = function (arr = [], param = '', value = '') {
   const task1Result = renameTask1(arr, param, value);
@@ -15,4 +12,4 @@ const boot = function (arr = [], param = '', value = '') {
   console.log(task2Result);
 };
 
-boot(words, 'type', 'socks');
+boot(data, 'type', 'socks');
