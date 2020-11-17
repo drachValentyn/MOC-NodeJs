@@ -26,7 +26,9 @@ content-type: application/json
   {"type":"socks", "color":"blue", "quantity":2, "priceForPair":"$6"},
   {"type":"hat", "color":"green", "quantity":3, "price":"$5"},
   {"type":"hat", "color":"red", "quantity":1, "price":"$6"},
-  {"type":"socks", "color":"blue", "priceForPair":"$6"}
+  {"type":"socks", "color":"blue", "priceForPair":"$6"},
+  {"type":"socks", "color":"blue", "quantity":15, "priceForPair":"$15"}
+
 ]
 
 ###

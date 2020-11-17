@@ -20,7 +20,6 @@ module.exports = async (request, response) => {
       })
       .on('end', () => {
         body = Buffer.concat(body).toString();
-
         router(
           {
             ...request,
