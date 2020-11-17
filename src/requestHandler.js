@@ -8,7 +8,6 @@ module.exports = async (request, response) => {
     const { url, method } = request;
     const parsedUrl = new URL(url, process.env.ORIGIN);
     const queryParams = parseQuery(parsedUrl.search.substr(1));
-
     let body = [];
 
     request

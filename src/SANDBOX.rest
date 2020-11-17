@@ -1,16 +1,16 @@
 # root
-GET http://localhost:3000/filter?param=type&val=socks
+GET http://localhost:3002/filter?param=type&val=socks
 Accept: application/json
 ###
 
-GET http://localhost:3000/max-price
+GET http://localhost:3002/max-price
 ###
 
-GET http://localhost:3000/format
+GET http://localhost:3002/format
 Accept: application/json
 ###
 
-POST http://localhost:3000/addArray
+POST http://localhost:3002/addArray
 content-type: application/json
 
 [

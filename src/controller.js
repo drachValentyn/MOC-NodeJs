@@ -1,7 +1,7 @@
 const querystring = require('querystring');
 const { task1: filterArr, task2: maxPrice, task3 } = require('./task');
 
-const data = global.store;
+const data = global.store || require('../data.json');
 
 const getFilterArr = (req, res) => {
   const { param, val } = querystring.parse(req.url.split('?').slice(1).join(''));
@@ -21,7 +21,7 @@ const formatArr = (req, res) => {
 
 const createStore = (req, res) => {
   const { body } = req;
-  global.store = JSON.parse(body);
+  global.store = JSON.stringify(body);
   res.writeHead(201, { 'Content-Type': 'application/json' });
   return res.end(JSON.stringify(body));
 };

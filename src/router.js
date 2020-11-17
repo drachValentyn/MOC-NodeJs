@@ -1,8 +1,8 @@
-const { getFilterArr, getMax, formatArr, createStore } = require('./src/controller');
+const { getFilterArr, getMax, formatArr, createStore } = require('./controller');
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res) => {
-  const { url, method } = req;
+  const { url, method, queryParams, body: data } = req;
   if (method === 'GET' && url.match(/\/filter/)) return getFilterArr(req, res);
   if (method === 'GET' && url.match(/\/max-price/)) return getMax(req, res);
   if (method === 'GET' && url.match(/\/format/)) return formatArr(req, res);
