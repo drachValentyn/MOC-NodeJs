@@ -1,6 +1,3 @@
-// eslint-disable-next-line no-unused-vars
-const data = require('../../homework.json');
-
 const getMaxValue = function (obj) {
   const price = +(obj.price || obj.priceForPair).slice(1);
   const quantity = obj.quantity || 0;
@@ -13,4 +10,4 @@ const biggestPrice = function (array) {
   });
 };
 
-module.exports = biggestPrice(data);
+module.exports = biggestPrice;
