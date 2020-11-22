@@ -40,3 +40,12 @@ Accept: application/json
 
 POST http://localhost:3002/source?type=store
 Accept: application/json
+
+###Get Discount with callback
+GET http://localhost:3002/callback
+
+###Get Discount with promise
+GET http://localhost:3002/promise
+
+###Get Discount with async-await
+GET http://localhost:3002/async-await
