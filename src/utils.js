@@ -2,13 +2,31 @@ const getRandom = () => {
   return Math.floor(Math.random() * 99) + 1;
 };
 
-const randomDiscountCb = (cb) => {
+const getTypeProduct = (item) => {
+  let discountType = 1;
+  if (item.type === 'hat') discountType++;
+  if (item.type === 'hat' && item.color === 'red') discountType++;
+  return discountType;
+};
+
+const formatDataDiscount = (item, discount) => {
+  return {
+    type: item.type,
+    color: item.color,
+    quantity: item.quantity || 0,
+    price: item.price || item.priceForPair,
+    discount: `${discount}%`,
+  };
+};
+
+const randomDiscountCb = function (cb) {
   setTimeout(() => {
     let discount = getRandom();
+    while (discount > 20) discount = getRandom();
     if (discount > 20) {
-      return cb(new Error(`number too big ${discount}`));
+      throw cb(new Error(`number too big ${discount}`));
     }
-    return cb(null, discount);
+    cb(discount);
   }, 50);
 };
 
@@ -31,4 +49,10 @@ async function randomDiscountAsAw() {
   }
 }
 
-module.exports = { randomDiscountCb, randomDiscountPr, randomDiscountAsAw };
+module.exports = {
+  getTypeProduct,
+  formatDataDiscount,
+  randomDiscountCb,
+  randomDiscountPr,
+  randomDiscountAsAw,
+};
