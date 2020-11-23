@@ -1,7 +1,6 @@
 const querystring = require('querystring');
-require('./helpers');
 const { task1: filterArr, task2: maxPrice, task3 } = require('./task');
-const { randomDiscountCb, randomDiscountPr, randomDiscountAsAw } = require('./utils');
+const { getArrayWithDiscCb, getArrayWithDiscPromise } = require('./utils');
 
 const dataLocal = require('../data.json');
 
@@ -48,37 +47,30 @@ const changeSource = (req, res) => {
 
 const callback = (req, res) => {
   res.setHeader('Content-Type', 'application/json');
-  const data = dataFlag || dataLocal;
-  data.myMap((item) => {
-    randomDiscountCb((err, number) => {
-      if (err) {
-        console.log(err.message);
-      }
-      // if (!(number > 20)) {
-      console.log(number);
-      // }
-    });
-    return item;
-    // item.discount = randomDiscountCb((err, number) => {
-    //   if (err) console.log(err);
-    //   else {
-    //     console.log(number);
-    //   }
-    // });
+  getArrayWithDiscCb(dataFlag || dataLocal, (body, err) => {
+    if (err) throw new Error(err);
+    res.end(JSON.stringify(body));
   });
-
-  res.end(JSON.stringify(data));
 };
 
 const promise = (req, res) => {
   res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(maxPrice(dataFlag || dataLocal)));
+  getArrayWithDiscPromise(dataFlag || dataLocal)
+    .then((body) => {
+      res.end(JSON.stringify(body));
+    })
+    .catch((err) => console.error(err));
 };
 
-const asyncAwait = (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(maxPrice(dataFlag || dataLocal)));
-};
+async function asyncAwait(req, res) {
+  try {
+    const body = await getArrayWithDiscPromise(dataFlag || dataLocal);
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify(body));
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 module.exports = {
   getFilterArr,

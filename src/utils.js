@@ -1,25 +1,10 @@
+require('./helpers');
+
 const getRandom = () => {
   return Math.floor(Math.random() * 99) + 1;
 };
 
-const getTypeProduct = (item) => {
-  let discountType = 1;
-  if (item.type === 'hat') discountType++;
-  if (item.type === 'hat' && item.color === 'red') discountType++;
-  return discountType;
-};
-
-const formatDataDiscount = (item, discount) => {
-  return {
-    type: item.type,
-    color: item.color,
-    quantity: item.quantity || 0,
-    price: item.price || item.priceForPair,
-    discount: `${discount}%`,
-  };
-};
-
-const randomDiscountCb = function (cb) {
+const randomDiscountCb = (cb) => {
   setTimeout(() => {
     let discount = getRandom();
     while (discount > 20) discount = getRandom();
@@ -30,29 +15,87 @@ const randomDiscountCb = function (cb) {
   }, 50);
 };
 
-function randomDiscountPr() {
-  return new Promise((res, rej) => {
-    setTimeout(() => {
-      const discount = getRandom();
-      if (discount <= 20) res(discount);
-      else rej(new Error(`number too big ${discount}`));
-    }, 50);
-  });
-}
+const getTypeProduct = (item) => {
+  let discount = 1;
+  if (item.type === 'hat') discount++;
+  if (item.type === 'hat' && item.color === 'red') discount++;
+  return discount;
+};
 
-async function randomDiscountAsAw() {
-  try {
-    const rand = await randomDiscountPr();
-    console.log(rand);
-  } catch (error) {
-    console.log(error.message);
+const formatDataDiscount = (el, discount) => {
+  return {
+    type: el.type,
+    color: el.color,
+    quantity: el.quantity || 0,
+    price: el.price || el.priceForPair,
+    discount: `${discount}%`,
+  };
+};
+
+const getDiscountCb = (type = 1, cb) => {
+  let count = 1;
+  for (let i = 0; i < type; i++) {
+    // eslint-disable-next-line no-loop-func
+    randomDiscountCb((number) => {
+      count *= Math.fround((1 - number / 100) * 100) / 100;
+      if (i === type - 1) {
+        count = Math.floor((1 - count) * 100);
+        cb(count);
+      }
+    });
   }
-}
+};
+
+const getDiscountPromise = (type = 1) => {
+  return new Promise((res, rej) => {
+    let count = 1;
+    for (let i = 0; i < type; i++) {
+      // eslint-disable-next-line no-loop-func
+      randomDiscountCb((number) => {
+        count *= Math.fround((1 - number / 100) * 100) / 100;
+        if (i === type - 1) {
+          count = Math.floor((1 - count) * 100);
+          res(count);
+        }
+      });
+    }
+  });
+};
+
+const getArrayWithDiscCb = (data, callback) => {
+  const newData = [];
+  data.myMap((prod) => {
+    getDiscountCb(getTypeProduct(prod), (discount) => {
+      // eslint-disable-next-line no-param-reassign
+      prod = formatDataDiscount(prod, discount);
+      newData.push(prod);
+      if (newData.length === data.length) {
+        callback(newData);
+      }
+    });
+  });
+};
+
+const getArrayWithDiscPromise = (data) => {
+  const newData = [];
+  return new Promise((res) => {
+    data.myMap((prod) => {
+      const discountType = getTypeProduct(prod);
+      getDiscountPromise(discountType).then((discount) => {
+        // eslint-disable-next-line no-param-reassign
+        prod = formatDataDiscount(prod, discount);
+        newData.push(prod);
+        if (newData.length === data.length) {
+          res(newData);
+        }
+      });
+    });
+  });
+};
 
 module.exports = {
   getTypeProduct,
   formatDataDiscount,
-  randomDiscountCb,
-  randomDiscountPr,
-  randomDiscountAsAw,
+  getArrayWithDiscCb,
+  getArrayWithDiscPromise,
 };
