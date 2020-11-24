@@ -9,8 +9,9 @@ const {
   asyncAwait,
 } = require('./controller');
 
-// eslint-disable-next-line consistent-return
-module.exports = (req, res) => {
+const { uploadCsv } = require('./parseCsv');
+
+function handleRoutes(req, res) {
   const { url, method, queryParams, body: data } = req;
   if (method === 'GET' && url.match(/\/filter/)) return getFilterArr(req, res);
   if (method === 'GET' && url.match(/\/max-price/)) return getMax(req, res);
@@ -24,7 +25,33 @@ module.exports = (req, res) => {
 
   // eslint-disable-next-line no-use-before-define
   notFound(res);
-};
+}
+
+async function handleStreamRoutes(req, res) {
+  const { url, method } = req;
+
+  if (method === 'PUT' && url.match(/\/store\/csv/)) {
+    try {
+      await uploadCsv(req);
+    } catch (err) {
+      console.error('Failed to upload CSV', err);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 500;
+      res.end(JSON.stringify({ status: 'error' }));
+      return;
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    res.statusCode = 200;
+    res.end(JSON.stringify({ status: 'ok' }));
+  }
+
+  // eslint-disable-next-line no-use-before-define
+  notFound(res);
+}
+
+module.exports = { handleRoutes, handleStreamRoutes };
 
 const notFound = (res) => {
   res.setHeader('Content-Type', 'application/json');

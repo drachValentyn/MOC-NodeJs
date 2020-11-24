@@ -1,8 +1,8 @@
 const querystring = require('querystring');
-const { task1: filterArr, task2: maxPrice, task3 } = require('./task');
-const { getArrayWithDiscCb, getArrayWithDiscPromise } = require('./utils');
+const { task1: filterArr, task2: maxPrice, task3 } = require('../task');
+const { getArrayWithDiscCb, getArrayWithDiscPromise } = require('../utils/csv-tojson');
 
-const dataLocal = require('../data.json');
+const dataLocal = require('../../data.json');
 
 let dataStore = null;
 

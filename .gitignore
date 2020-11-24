@@ -1,6 +1,7 @@
 .vscode/
 /node_modules
 .env
+/uploads
 
 .DS_Store
 .Spotlight-V100

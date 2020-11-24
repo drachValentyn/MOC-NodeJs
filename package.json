@@ -21,6 +21,8 @@
     "prettier": "^2.1.2"
   },
   "dependencies": {
-    "dotenv": "^8.2.0"
+    "cd": "^0.3.3",
+    "dotenv": "^8.2.0",
+    "nanoid": "^3.1.18"
   }
 }
