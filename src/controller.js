@@ -1,5 +1,6 @@
 const querystring = require('querystring');
 const { task1: filterArr, task2: maxPrice, task3 } = require('./task');
+const { getArrayWithDiscCb, getArrayWithDiscPromise } = require('./utils');
 
 const dataLocal = require('../data.json');
 
@@ -44,10 +45,40 @@ const changeSource = (req, res) => {
   return res.end(JSON.stringify(type));
 };
 
+const callback = (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  getArrayWithDiscCb(dataFlag || dataLocal, (body, err) => {
+    if (err) throw new Error(err);
+    res.end(JSON.stringify(body));
+  });
+};
+
+const promise = (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  getArrayWithDiscPromise(dataFlag || dataLocal)
+    .then((body) => {
+      res.end(JSON.stringify(body));
+    })
+    .catch((err) => console.error(err));
+};
+
+async function asyncAwait(req, res) {
+  try {
+    const body = await getArrayWithDiscPromise(dataFlag || dataLocal);
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify(body));
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 module.exports = {
   getFilterArr,
   getMax,
   formatArr,
   createStore,
   changeSource,
+  callback,
+  promise,
+  asyncAwait,
 };
