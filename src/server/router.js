@@ -12,8 +12,9 @@ const {
 
 const { uploadCsv, parseJson } = require('./parseCsv');
 
+// eslint-disable-next-line consistent-return
 function handleRoutes(req, res) {
-  const { url, method, queryParams, body: data } = req;
+  const { url, method } = req;
   if (method === 'GET' && url.match(/\/filter/)) return getFilterArr(req, res);
   if (method === 'GET' && url.match(/\/max-price/)) return getMax(req, res);
   if (method === 'GET' && url.match(/\/format/)) return formatArr(req, res);
