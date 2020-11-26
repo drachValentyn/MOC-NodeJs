@@ -6,7 +6,7 @@ const { nanoid } = require('nanoid');
 
 const promisifiedPipeline = promisify(pipeline);
 
-const { createCsvToJson } = require('../utils/csvJson');
+const { createCsvToJson, optimizeJson } = require('../utils/csvJson');
 
 async function uploadCsv(inputStream) {
   const gunzip = createGunzip();
@@ -23,6 +23,20 @@ async function uploadCsv(inputStream) {
   }
 }
 
+async function parseJson(inputStream) {
+  const id = nanoid(10);
+  const filePath = `./upload-json/optim-${id}.json`;
+  const json = optimizeJson();
+  // const outputStream = fs.createWriteStream(filePath);
+
+  try {
+    await promisifiedPipeline(inputStream, json);
+  } catch (error) {
+    console.error('Failed to upload CSV', error);
+  }
+}
+
 module.exports = {
   uploadCsv,
+  parseJson,
 };

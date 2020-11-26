@@ -17,6 +17,13 @@ module.exports = async (request, response) => {
       return;
     }
 
+    if (request.headers['content-type'] === 'application/json') {
+      handleStreamRoutes(request, response).catch((err) =>
+        console.error('CSV handler failed', err),
+      );
+      return;
+    }
+
     request
       .on('error', (err) => {
         console.error(err);

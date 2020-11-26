@@ -48,4 +48,36 @@ function createCsvToJson() {
   return new Transform({ transform, flush });
 }
 
-module.exports = { createCsvToJson };
+function optimizeJson() {
+  const transform = (chunk, encoding, cb) => {
+    const jsonArr = JSON.parse(chunk.toString());
+
+
+
+    const res = jsonArr.reduce((acc, currentValue) => {
+      const { type } = currentValue;
+      // const accT = acc.type;
+      const { color } = currentValue;
+      const quantity = +currentValue.quantity;
+      const ttt = [];
+
+      acc[type] = (acc[type] || 0) + quantity;
+      acc[color] = (acc[color] || 0) + quantity;
+
+
+      return acc;
+    }, []);
+    // obj[prop] === currentValue[prop])
+    console.log(res);
+
+
+    cb(null, '');
+  };
+
+  const flush = (cb) => {
+    cb(null, '');
+  };
+  return new Transform({ transform, flush });
+}
+
+module.exports = { createCsvToJson, optimizeJson };

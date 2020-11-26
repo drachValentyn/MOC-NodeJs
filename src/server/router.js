@@ -10,8 +10,7 @@ const {
   getFilesDir,
 } = require('./controller');
 
-const { uploadCsv } = require('./parseCsv');
-const { optimizeJson } = require('../utils/optimizeJson');
+const { uploadCsv, parseJson } = require('./parseCsv');
 
 function handleRoutes(req, res) {
   const { url, method, queryParams, body: data } = req;
@@ -27,8 +26,6 @@ function handleRoutes(req, res) {
 
   if (method === 'GET' && url.match(/\/upload/)) return getFilesDir(req, res);
 
-  if (method === 'POST' && url.match(/\/optimize-json/)) return changeSource(req, res);
-
   // eslint-disable-next-line no-use-before-define
   notFound(res);
 }
@@ -39,6 +36,23 @@ async function handleStreamRoutes(req, res) {
   if (method === 'PUT' && url.match(/\/store\/csv/)) {
     try {
       await uploadCsv(req);
+    } catch (err) {
+      console.error('Failed to upload CSV', err);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 500;
+      res.end(JSON.stringify({ status: 'error' }));
+      return;
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    res.statusCode = 200;
+    res.end(JSON.stringify({ status: 'ok' }));
+  }
+
+  if (method === 'POST' && url.match(/\/uploads\/optimize/)) {
+    try {
+      await parseJson(req);
     } catch (err) {
       console.error('Failed to upload CSV', err);
 
