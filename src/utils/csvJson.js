@@ -48,23 +48,31 @@ function createCsvToJson() {
   return new Transform({ transform, flush });
 }
 
+function dedupAndSum(arr) {
+  const result = {};
+  const order = [];
+  arr.forEach((obj) => {
+    obj.quantity = +obj.quantity;
+    const id = obj.type && obj.color;
+
+    if (id in result) {
+      const stocklevel = +result[id].quantity + +obj.quantity;
+      result[id] = obj;
+      result[id].quantity = stocklevel;
+      order.push(order.splice(order.indexOf(id), 1));
+    } else {
+      result[id] = obj;
+      order.push(id);
+    }
+  });
+
+  return order.map((obj) => result[obj]);
+}
+
 function optimizeJson() {
+  let chunks = '';
   const transform = (chunk, encoding, cb) => {
-    const jsonArr = JSON.parse(chunk.toString());
-
-    const res = jsonArr.reduce((acc, currentValue) => {
-      const { type } = currentValue;
-      // const accT = acc.type;
-      const { color } = currentValue;
-      const quantity = +currentValue.quantity;
-      acc[type] = (acc[type] || 0) + quantity;
-      acc[color] = (acc[color] || 0) + quantity;
-
-      return acc;
-    }, []);
-    // obj[prop] === currentValue[prop])
-    console.log(res);
-
+    chunks += chunk;
     cb(null, '');
   };
 

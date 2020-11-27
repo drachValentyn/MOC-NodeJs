@@ -27,10 +27,10 @@ async function parseJson(inputStream) {
   const id = nanoid(10);
   const filePath = `./upload-json/optim-${id}.json`;
   const json = optimizeJson();
-  // const outputStream = fs.createWriteStream(filePath);
+  const outputStream = fs.createWriteStream(filePath);
 
   try {
-    await promisifiedPipeline(inputStream, json);
+    await promisifiedPipeline(inputStream, json, outputStream);
   } catch (error) {
     console.error('Failed to upload CSV', error);
   }
