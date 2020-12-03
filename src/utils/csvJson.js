@@ -1,4 +1,5 @@
-const { Transform } = require('stream');
+const { Transform, Readable, Writable } = require('stream');
+const { parser } = require('stream-json');
 
 function createCsvToJson() {
   let first = true;
@@ -48,37 +49,47 @@ function createCsvToJson() {
   return new Transform({ transform, flush });
 }
 
-function dedupAndSum(arr) {
-  const result = {};
-  const order = [];
-  arr.forEach((obj) => {
-    obj.quantity = +obj.quantity;
-    const id = obj.type && obj.color;
+// let chunks = '';
 
-    if (id in result) {
-      const stocklevel = +result[id].quantity + +obj.quantity;
-      result[id] = obj;
-      result[id].quantity = stocklevel;
-      order.push(order.splice(order.indexOf(id), 1));
-    } else {
-      result[id] = obj;
-      order.push(id);
-    }
-  });
+function dedupAndSum(chunks) {
+  console.log(chunks);
+  // const arr = JSON.parse(chunks);
+  // const result = {};
+  // const order = [];
+  // arr.forEach((obj) => {
+  //   obj.quantity = +obj.quantity;
+  //   const id = obj.type && obj.color;
 
-  return order.map((obj) => result[obj]);
+  //   if (id in result) {
+  //     const stocklevel = +result[id].quantity + +obj.quantity;
+  //     result[id] = obj;
+  //     result[id].quantity = stocklevel;
+  //     order.push(order.splice(order.indexOf(id), 1));
+  //   } else {
+  //     result[id] = obj;
+  //     order.push(id);
+  //   }
+  // });
+
+  // return order.map((obj) => result[obj]);
 }
 
 function optimizeJson() {
-  let chunks = '';
+  let data = '';
   const transform = (chunk, encoding, cb) => {
-    chunks += chunk;
+    data += chunk;
     cb(null, '');
   };
 
-  const flush = (cb) => {
-    cb(null, '');
-  };
+  function flush(callback) {
+    try {
+      // Make sure is valid json.
+      JSON.parse(data);
+      this.push(data);
+    } catch (err) {
+      callback(err);
+    }
+  }
   return new Transform({ transform, flush });
 }
 
