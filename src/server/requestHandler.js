@@ -9,7 +9,7 @@ module.exports = async (request, response) => {
     const parsedUrl = new URL(url, process.env.ORIGIN);
     const queryParams = parseQuery(parsedUrl.search.substr(1));
     let body = [];
-
+    console.log(request.headers['content-type']);
     if (request.headers['content-type'] === 'text/csv') {
       handleStreamRoutes(request, response).catch((err) =>
         console.error('CSV handler failed', err),

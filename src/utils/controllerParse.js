@@ -6,13 +6,13 @@ const { nanoid } = require('nanoid');
 
 const promisifiedPipeline = promisify(pipeline);
 
-const { createCsvToJson, optimizeJson } = require('../utils/csvJson');
+const { createCsvToJson, optimizeJson } = require('./parseFiles');
 
 async function uploadCsv(inputStream) {
   const gunzip = createGunzip();
 
   const id = nanoid();
-  const filePath = `./upload/${id}.json`;
+  const filePath = `./uploads/${id}.json`;
   const csvToJson = createCsvToJson();
   const outputStream = fs.createWriteStream(filePath);
 
@@ -25,7 +25,7 @@ async function uploadCsv(inputStream) {
 
 async function parseJson(inputStream) {
   const id = nanoid(10);
-  const filePath = `./upload-json/optim-${id}.json`;
+  const filePath = `./uploads-opt/opt-${id}.json`;
   const json = optimizeJson();
   const outputStream = fs.createWriteStream(filePath);
 

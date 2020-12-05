@@ -10,7 +10,7 @@ const {
   getFilesDir,
 } = require('./controller');
 
-const { uploadCsv, parseJson } = require('./parseCsv');
+const { uploadCsv, parseJson } = require('../utils/controllerParse');
 
 // eslint-disable-next-line consistent-return
 function handleRoutes(req, res) {

@@ -1,7 +1,9 @@
-const { Transform, Readable, Writable } = require('stream');
-const { parser } = require('stream-json');
+const { Transform } = require('stream');
+const { serailizeArr } = require('../helpers');
 
-function createCsvToJson() {
+console.log(serailizeArr);
+
+const createCsvToJson = () => {
   let first = true;
   let firstHeader = true;
   let resultStr = '[';
@@ -47,50 +49,33 @@ function createCsvToJson() {
     cb(null, ']');
   };
   return new Transform({ transform, flush });
-}
+};
 
-// let chunks = '';
+const optimizeJson = () => {
+  let outArr = [];
+  let lastStr = '';
 
-function dedupAndSum(chunks) {
-  console.log(chunks);
-  // const arr = JSON.parse(chunks);
-  // const result = {};
-  // const order = [];
-  // arr.forEach((obj) => {
-  //   obj.quantity = +obj.quantity;
-  //   const id = obj.type && obj.color;
-
-  //   if (id in result) {
-  //     const stocklevel = +result[id].quantity + +obj.quantity;
-  //     result[id] = obj;
-  //     result[id].quantity = stocklevel;
-  //     order.push(order.splice(order.indexOf(id), 1));
-  //   } else {
-  //     result[id] = obj;
-  //     order.push(id);
-  //   }
-  // });
-
-  // return order.map((obj) => result[obj]);
-}
-
-function optimizeJson() {
-  let data = '';
   const transform = (chunk, encoding, cb) => {
-    data += chunk;
-    cb(null, '');
+    const str = chunk.toString('utf8');
+
+    if (lastStr) lastStr += str.split('{', 1)[0];
+
+    const jsonToString = `${lastStr}${str.slice(str.indexOf('{'), str.lastIndexOf('}') + 1)}`;
+    const arr = JSON.parse(`[${jsonToString}]`);
+    outArr = serailizeArr(arr, outArr);
+    lastStr = str.slice(str.lastIndexOf('},') + 2);
+
+    cb(null, null);
   };
 
-  function flush(callback) {
-    try {
-      // Make sure is valid json.
-      JSON.parse(data);
-      this.push(data);
-    } catch (err) {
-      callback(err);
-    }
-  }
+  const flush = (cb) => {
+    const totalQuantity = outArr.reduce((acc, current) => acc + current.quantity, 0);
+    console.log(`Total quantity = ${totalQuantity}`);
+
+    cb(null, JSON.stringify(outArr));
+  };
+
   return new Transform({ transform, flush });
-}
+};
 
 module.exports = { createCsvToJson, optimizeJson };

@@ -2,7 +2,7 @@ const querystring = require('querystring');
 const path = require('path');
 const fs = require('fs');
 const { task1: filterArr, task2: maxPrice, task3 } = require('../task');
-const { getArrayWithDiscCb, getArrayWithDiscPromise } = require('../utils/csvJson');
+const { getArrayWithDiscCb, getArrayWithDiscPromise } = require('../utils/parseFiles');
 
 const dataLocal = require('../../data.json');
 
