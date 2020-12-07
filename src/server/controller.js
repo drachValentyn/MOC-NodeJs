@@ -1,8 +1,10 @@
 const querystring = require('querystring');
-const { task1: filterArr, task2: maxPrice, task3 } = require('./task');
-const { getArrayWithDiscCb, getArrayWithDiscPromise } = require('./utils');
+const path = require('path');
+const fs = require('fs');
+const { task1: filterArr, task2: maxPrice, task3 } = require('../task');
+const { getArrayWithDiscCb, getArrayWithDiscPromise } = require('../utils/parseFiles');
 
-const dataLocal = require('../data.json');
+const dataLocal = require('../../data.json');
 
 let dataStore = null;
 
@@ -62,6 +64,7 @@ const promise = (req, res) => {
     .catch((err) => console.error(err));
 };
 
+// eslint-disable-next-line consistent-return
 async function asyncAwait(req, res) {
   try {
     const body = await getArrayWithDiscPromise(dataFlag || dataLocal);
@@ -72,6 +75,22 @@ async function asyncAwait(req, res) {
   }
 }
 
+const getFilesDir = (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  const dirPath = path.join('upload');
+  let list = '';
+  fs.readdir(dirPath, (err, files) => {
+    if (err) console.error(`Unable to scan directory${err}`);
+
+    files.forEach((file) => {
+      list += `${file}\n`;
+      console.log(file);
+    });
+
+    return res.end(list);
+  });
+};
+
 module.exports = {
   getFilterArr,
   getMax,
@@ -81,4 +100,5 @@ module.exports = {
   callback,
   promise,
   asyncAwait,
+  getFilesDir,
 };
